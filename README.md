@@ -32,13 +32,26 @@ Currency::find('EUR')->countries;
 
 ## Installation
 
+Minimum Requirements:
+- PHP 7.4 or higher
+- Laravel 7 or higher
+
 You can install the package via composer:
 
 ```bash
+# For PHP 7.4 - 8.2 (Laravel 7-12)
 composer require io238/laravel-iso-countries
+
+# For PHP < 7.4 (Laravel 6 and older)
+composer require io238/laravel-iso-countries:^2.0
 ```
 
-The latest version of this package requires PHP version 8.1 or above and supports Laravel 7, 8, 9, 10, 11, and 12. If you need support for PHP 7.4, please install version 2 of this package. For PHP 8.0, use version 3.
+The latest version of this package supports a wide range of PHP and Laravel versions:
+
+- Supports PHP 7.4 - 8.2
+- Compatible with Laravel 7, 8, 9, 10, 11, and 12
+
+If you're using older PHP versions (< 7.4), please install version 2 of this package.
 
 ### Migrations
 
@@ -319,9 +332,20 @@ composer test
 
 ### Testing with Different Laravel Versions
 
-This package supports Laravel 7, 8, 9, 10, 11, and 12. We use GitHub Actions to automatically test compatibility across all supported versions.
+This package supports a wide range of Laravel and PHP versions:
 
-For details on how to test this package with different Laravel versions locally, please see our [Testing Guide](TESTING.md).
+| Laravel Version | PHP Version Support            |
+|-----------------|-------------------------------|
+| Laravel 7       | PHP 7.4                       |
+| Laravel 8       | PHP 7.4, 8.0                  |
+| Laravel 9       | PHP 8.0, 8.1                  |
+| Laravel 10      | PHP 8.1, 8.2                  |
+| Laravel 11      | PHP 8.2                       |
+| Laravel 12      | PHP 8.2                       |
+
+We use GitHub Actions to automatically test compatibility across all supported versions.
+
+For detailed instructions on how to test this package with different Laravel versions locally, please see our [Testing Guide](TESTING.md).
 
 ## Contributing
 
@@ -344,3 +368,13 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+## Version History
+
+| Version | PHP Compatibility | Laravel Compatibility | Key Features |
+|---------|------------------|----------------------|-------------|
+| 4.x     | PHP 7.4-8.2      | Laravel 7-12         | Extended PHP compatibility, Laravel 11-12 support |
+| 3.x     | PHP 8.0-8.1      | Laravel 7-10         | PHP 8.0 and 8.1 support |
+| 2.x     | PHP 7.3-7.4      | Laravel 6-7          | PHP 7.3 and 7.4 support |
+
+See [CHANGELOG](CHANGELOG.md) for detailed release notes.
