@@ -38,8 +38,7 @@ You can install the package via composer:
 composer require io238/laravel-iso-countries
 ```
 
-The latest version of this package requires PHP version 8.0 or above. If you need support for PHP 7.4, please install
-version 2 of this package.
+The latest version of this package requires PHP version 8.1 or above and supports Laravel 7, 8, 9, 10, 11, and 12. If you need support for PHP 7.4, please install version 2 of this package. For PHP 8.0, use version 3.
 
 ### Migrations
 
@@ -312,9 +311,17 @@ MyModel::first()->update(['currency' => Io238\ISOCountries\Models\Currency::find
 
 ## Testing
 
+### Unit Tests
+
 ```bash
 composer test
 ```
+
+### Testing with Different Laravel Versions
+
+This package supports Laravel 7, 8, 9, 10, 11, and 12. We use GitHub Actions to automatically test compatibility across all supported versions.
+
+For details on how to test this package with different Laravel versions locally, please see our [Testing Guide](TESTING.md).
 
 ## Contributing
 
