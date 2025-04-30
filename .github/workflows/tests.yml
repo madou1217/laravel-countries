@@ -50,7 +50,7 @@ jobs:
           # Laravel 12 with PHP 8.2 (Laravel 12 requires PHP 8.2+)
           - php: 8.2
             laravel: 12.*
-            testbench: 9.*
+            testbench: 10.*
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
