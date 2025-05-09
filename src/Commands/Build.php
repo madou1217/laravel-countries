@@ -4,6 +4,7 @@ namespace Io238\ISOCountries\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Fluent;
 use Io238\ISOCountries\Database\Migrations\IsoTables;
@@ -14,7 +15,7 @@ use Io238\ISOCountries\Models\Language;
 
 
 class Build extends Command {
-
+      use EnsuresDataFiles;
     /**
      * The name and signature of the console command.
      *
@@ -47,6 +48,9 @@ class Build extends Command {
         Country::unsetEventDispatcher();
         Language::unsetEventDispatcher();
         Currency::unsetEventDispatcher();
+
+        $this->info('Ensuring data files exist...');
+        $this->ensureDataFilesExist();
 
         $this->info('Reset DB file...');
         $this->resetDatabase();
@@ -301,11 +305,21 @@ class Build extends Command {
 
         foreach ($locales as $locale) {
 
-            $file = match ($model) {
-                Country::class => __DIR__ . "/../../data/translations/countries/$locale/country.php",
-                Language::class => __DIR__ . "/../../data/translations/languages/$locale/language.php",
-                Currency::class => __DIR__ . "/../../data/translations/currencies/$locale/currency.php",
-            };
+            // php8.0 +
+            // $file = match ($model) {
+            //     Country::class => __DIR__ . "/../../data/translations/countries/$locale/country.php",
+            //     Language::class => __DIR__ . "/../../data/translations/languages/$locale/language.php",
+            //     Currency::class => __DIR__ . "/../../data/translations/currencies/$locale/currency.php",
+            // };
+
+            $file = null;
+            if ($model === Country::class) {
+                $file = __DIR__ . "/../../data/translations/countries/$locale/country.php";
+            } elseif ($model === Language::class) {
+                $file = __DIR__ . "/../../data/translations/languages/$locale/language.php";
+            } elseif ($model === Currency::class) {
+                $file = __DIR__ . "/../../data/translations/currencies/$locale/currency.php";
+            }
 
             if ( ! file_exists($file)) {
                 continue;
@@ -314,16 +328,33 @@ class Build extends Command {
             $translations = require $file;
 
             foreach ($translations as $id => $name) {
-                $item = $model::find($id)?->setTranslation('name', $locale, $name)->saveQuietly();
+                $entity = $model::find($id);
+                if ($entity !== null) {
+                    $entity->setTranslation('name', $locale, $name)->saveQuietly();
+                }
             }
 
         }
     }
 
 
+    /**
+     * 复制数据库文件
+     * 如果当前使用的是包内数据库,则将其复制到项目配置路径
+     * 如果当前使用的是项目数据库,则不执行copy
+     */
     private function copyDatabaseFile(): void
     {
-        copy(ISOCountriesServiceProvider::getPackageDatabaseFile(), config('iso-countries.database_path'));
-    }
+        $packageDbFile = ISOCountriesServiceProvider::getPackageDatabaseFile();
+        $configDbPath = config('iso-countries.database_path');
+        $currentDbFile = config('database.connections.iso-countries.database');
 
+        // 判断当前使用的是否为项目配置的数据库文件
+        $isPackageDb = realpath($currentDbFile) === realpath($packageDbFile);
+
+        if ($isPackageDb) {
+            $this->info('Copying database from package to project: ' . $packageDbFile . ' -> ' . $configDbPath);
+            copy($packageDbFile, $configDbPath);
+        }
+    }
 }
